@@ -1,0 +1,46 @@
+{
+  "name": "heatmap-script",
+  "version": "1.0.0",
+  "description": "heatmap\u001b[D\u001b[D\u001b[D\u001b[D\u001b[C \u001b[C\u001b[C\u001b[D\u001b[D\u001b[D\u001b[C add this scripts to your website",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "start": "webpack-dev-server --output-public-path=/build/ --mode=development --devtool=none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuchuc781999/heatmap-scripts.git"
+  },
+  "author": "Vu Chuc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vuchuc781999/heatmap-scripts/issues"
+  },
+  "homepage": "https://github.com/vuchuc781999/heatmap-scripts#readme",
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/plugin-proposal-do-expressions": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-function-bind": "^7.0.0",
+    "@babel/plugin-proposal-function-sent": "^7.0.0",
+    "@babel/plugin-proposal-json-strings": "^7.0.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.0.0",
+    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+    "@babel/plugin-proposal-pipeline-operator": "^7.0.0",
+    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-syntax-import-meta": "^7.0.0",
+    "@babel/polyfill": "^7.6.0",
+    "@babel/preset-env": "^7.6.3",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  }
+}
