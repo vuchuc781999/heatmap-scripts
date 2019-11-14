@@ -1,10 +1,19 @@
-import { person } from './collect';
 
-console.log(person.name);
-const getPosts = async () => {
-  const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-  const data = await response.json();
-  return data;
+import initial from './initial';
+import collect from './collect';
+import show from './show';
+
+const hide = () => {
+  const heatMap = document.getElementById("heat_map");
+
+  if (heatMap) {
+    heatMap.remove();
+  }
 }
 
-getPosts().then(posts => console.log(posts));
+(async () => {
+  await initial();
+  window.show = show;
+  window.hide = hide;
+  collect();
+})();
