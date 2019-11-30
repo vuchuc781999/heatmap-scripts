@@ -1,19 +1,11 @@
 
 import initial from './initial';
 import collect from './collect';
-import show from './show';
-
-const hide = () => {
-  const heatMap = document.getElementById("heat_map");
-
-  if (heatMap) {
-    heatMap.remove();
-  }
-}
+import { showData, hideData} from './show';
 
 (async () => {
   await initial();
-  window.show = show;
-  window.hide = hide;
+  window.show = showData;
+  window.hide = hideData;
   collect();
 })();

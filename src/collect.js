@@ -62,8 +62,8 @@ const processClick = async (e) => {
   try {
     const position = await findPosition(e.target);
     const { left, top, width, height } = e.target.getBoundingClientRect();
-    const x = (e.x + window.scrollX - left) / width;
-    const y = (e.y + window.scrollY - top) / height;
+    const x = (e.x - left) / width;
+    const y = (e.y - top) / height;
 
     const data = {
       pathname: window.location.pathname,
@@ -85,3 +85,4 @@ const collectData = () => {
 };
 
 export default collectData;
+export { findPosition, processClick };
