@@ -1,7 +1,8 @@
 "use strict";
 
-import { rootUrl } from './config';
-import { pageId } from './initial';
+import { rootUrl } from '../config';
+import { pageId } from '../initial';
+import { postData } from '../helper';
 
 const url = `${rootUrl}/click/create`;
 
@@ -42,28 +43,13 @@ const findPosition = async (node, positionString = '') => {
   }
 };
 
-const postData = async (url, data) => {
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    const text = await res.text();
-    console.log(text);
-  } catch (e) {
-    console.error(e);
-  }
-};
-
 const processClick = async (e) => {
   try {
     const position = await findPosition(e.target);
     const { left, top, width, height } = e.target.getBoundingClientRect();
     const x = (e.x - left) / width;
     const y = (e.y - top) / height;
+    const timestamp = new Date().toUTCString();
 
     const data = {
       pathname: window.location.pathname,
@@ -72,6 +58,7 @@ const processClick = async (e) => {
       position,
       x,
       y,
+      timestamp
     };
 
     await postData(url, data);

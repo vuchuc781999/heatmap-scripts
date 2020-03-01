@@ -2,6 +2,7 @@
 import { rootUrl } from './config';
 
 let pageId = '';
+const loadedTimestamp = new Date();
 
 const getId = async (url, data) => {
   const res = await fetch(url, {
@@ -29,4 +30,4 @@ const initial = async () => {
 };
 
 export default initial;
-export { pageId };
+export { pageId, loadedTimestamp };

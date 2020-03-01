@@ -1,25 +1,26 @@
 "use strict";
 
 import * as d3 from 'd3';
-import { rootUrl } from './config';
-import { pageId } from './initial';
+import { rootUrl } from '../config';
+import { pageId } from '../initial';
 import showTooltip from './tooltip';
 import { processClick } from './collect'
+import { showedStatus, getData } from '../helper';
 
 let weight = 1;
 let bandwidth = 1;
 let processedData = null;
-let showed = false;
+let showed = new showedStatus();
 
-const getData = async (url) => {
-  try {
-    const res = await fetch(url);
-    const obj = await res.json();
-    return obj.data;
-  } catch (e) {
-    console.error(e);
-  }
-};
+// const getData = async (url) => {
+//   try {
+//     const res = await fetch(url);
+//     const obj = await res.json();
+//     return obj.data;
+//   } catch (e) {
+//     console.error(e);
+//   }
+// };
 
 // const checkPosition = async (tagName, position) => {
 //   try {
@@ -73,7 +74,6 @@ const getRectByPosition = async (tagName, position) => {
 }
 
 const draw = async (data, weight, bandwidth) => {
-  const start = new Date();
   const density = document.getElementById('hm_density');
   if (density) {
     density.remove();
@@ -110,14 +110,14 @@ const draw = async (data, weight, bandwidth) => {
     .attr('width', width)
     .attr('height', height);
 
-  // svg.insert('g', 'g')
-  //   .selectAll('circle')
-  //   .data(data)
-  //   .enter().append('circle')
-  //     .attr('r', 4)
-  //     .attr('cx', d => d.x)
-  //     .attr('cy', d => d.y)
-  //     .attr('fill', 'red');
+  /* svg.insert('g', 'g')
+    .selectAll('circle')
+    .data(data)
+    .enter().append('circle')
+      .attr('r', 4)
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .attr('fill', 'red'); */
 
   svg.insert('g', 'g')
     .selectAll('path')
@@ -127,7 +127,6 @@ const draw = async (data, weight, bandwidth) => {
       .attr('stroke', 'none')
       .attr('fill', (d) => colour(d.value));
   
-  console.log(new Date() - start);
 }
 
 const tooltip = async (heatMap) => {
@@ -139,7 +138,7 @@ const tooltip = async (heatMap) => {
   ratio.style.bottom = '0';
   ratio.style.left = '0';
   ratio.style.padding = '1px';
-  ratio.style.zIndex = '10';
+  ratio.style.zIndex = '99';
 
   ratioText.id = 'hm_ratio_text';
   ratioText.style.margin = '0';
@@ -148,6 +147,7 @@ const tooltip = async (heatMap) => {
 
   ratio.appendChild(ratioText);
   heatMap.appendChild(ratio);
+
   window.addEventListener('click', showTooltip);
 }
 
@@ -160,7 +160,7 @@ const slider = async (heatMap, data) => {
   divSlider.style.bottom = '0';
   divSlider.style.right = '0';
   divSlider.style.padding = '1px';
-  divSlider.style.zIndex = '10';
+  divSlider.style.zIndex = '99';
 
   weightSlider.id = 'hm_weight_slider'
   weightSlider.type = 'range';
@@ -180,18 +180,38 @@ const slider = async (heatMap, data) => {
   divSlider.appendChild(bandwidthSlider);
   heatMap.appendChild(divSlider);
 
-  weightSlider.addEventListener('mouseup', (e) => {
+  let ticking = false;
+
+  weightSlider.addEventListener('input', (e) => {
     weight = e.target.value;
+
+    if (!ticking) {
+      window.requestAnimationFrame(async () => {
+        await draw(data, weight, bandwidth);
+        ticking = false;
+      });
+
+      ticking = true;
+    }
   });
 
-  bandwidthSlider.addEventListener('mouseup', (e) => {
+  bandwidthSlider.addEventListener('input', (e) => {
     bandwidth = e.target.value;
+
+    if (!ticking) {
+      window.requestAnimationFrame(async () => {
+        await draw(data, weight, bandwidth);
+        ticking = false;
+      });
+
+      ticking = true;
+    }
   })
 }
 
 const showData = async () => {
   try {
-    if (showed) {
+    if (showed.isShowed()) {
       return;
     }
 
@@ -295,17 +315,17 @@ const showData = async () => {
     window.removeEventListener('click', processClick);
     await draw(data, weight, bandwidth);
 
-    let lastWeight = weight;
-    let lastBandwidth = bandwidth;
+    // let lastWeight = weight;
+    // let lastBandwidth = bandwidth;
 
-    setInterval(async () => {
-      if (weight !== lastWeight || bandwidth !== lastBandwidth) {
-        await draw(data, weight, bandwidth);
-        lastWeight = weight;
-        lastBandwidth = bandwidth;
-      }
-    }, 250);
-    showed = true;
+    // setInterval(async () => {
+    //   if (weight !== lastWeight || bandwidth !== lastBandwidth) {
+    //     await draw(data, weight, bandwidth);
+    //     lastWeight = weight;
+    //     lastBandwidth = bandwidth;
+    //   }
+    // }, 250);
+    showed.status(true);
     await slider(heatMap, data);
     await tooltip(heatMap);
   } catch (e) {
@@ -314,13 +334,12 @@ const showData = async () => {
 };
 
 const hideData = () => {
-  if (showed) {
+  if (showed.isShowed()) {
     document.getElementById("heat_map").remove();
     window.removeEventListener('click', showTooltip);
     window.addEventListener('click', processClick);
-    showed = false;
+    showed.status(false);
   }
 }
 
-export { showData, hideData };
-export { processedData };
+export { showData, hideData, processedData };

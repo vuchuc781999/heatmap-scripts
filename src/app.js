@@ -1,11 +1,13 @@
 
 import initial from './initial';
-import collect from './collect';
-import { showData, hideData} from './show';
+import collectClick from './click/collect';
+import { showData, hideData } from './click/show';
+import collectScroll from './scroll/collect';
 
-(async () => {
+window.addEventListener('load', async () => {
   await initial();
   window.show = showData;
   window.hide = hideData;
-  collect();
-})();
+  collectClick();
+  collectScroll();
+});
